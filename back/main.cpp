@@ -50,7 +50,7 @@ int main(){
 
     MYSQL *conn;
 
-    Restaurant *JanMoJib = Restaurant::GetInstance("JanMoJib", "11111", 0); // Restaurant Info
+    Restaurant *JanMoJib = Restaurant::GetInstance("JangMoJib", "11111", 0); // Restaurant Info
     Customer *Hoon = new Customer("Hoon", "12345", 1000);                   // User Info
 
     conn = mysql_init(NULL);
