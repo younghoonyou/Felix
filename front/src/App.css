@@ -1,0 +1,90 @@
+.Rectangle-Box{
+  display: flex;
+  /* flex:1; */
+  height: 763px;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: center;
+  background-color: #00A4DF;
+}
+.Form-Box{
+  /* flex:1; */
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: 600px;
+  background-color: white;
+  border-radius: 10px;
+  border: 5px solid #006998;
+  align-items: center;
+  justify-content: center;
+}
+
+.Input-Inputs{
+  background-color: #F6F6F6;
+  color: black;
+  width: 250px;
+  height: 20px;
+}
+
+.Input-name{
+  color: #00A2DF;
+  font-size: 25px;
+  font-weight:bold;
+}
+
+.NumberBox{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Numbersmall{
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+}
+
+.NumButton{
+  background-color: #F6F6F6;
+  margin: 3px 10px 3px 10px;
+  font-size: 5px;
+  color: #a4a4a4;
+  border-radius: 2px;
+  width: 77px;
+  height: 77px;
+  justify-content: space-between;
+  font-size: 30px;
+}
+.ConfirmButton{
+  background-color: #00a8e1;
+  width: 280px;
+  height: 40px;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.Amount-Box{
+  display: flex;
+  flex-direction: column;
+  background-color: #F6F6F6;
+  border: 2px solid #a4a4a4;
+  border-radius: 3px;
+  margin: 3px 0 3px 0;
+  width: 270px;
+}
+.Amount-sale{
+  float: left;
+  color:#888888;
+  font-size: 15px;
+}
+
+.Amount-text{
+  float: left;
+  color: #00A2DF;
+  font-size: 25px;
+  font-weight: bold;
+}
