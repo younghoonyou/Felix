@@ -1,4 +1,4 @@
-#include "Transaction.h"
+#include "../lib/Transaction.h"
 
 bool Pay(Customer **customer,Restaurant **restaurent, int price)
 {
@@ -31,3 +31,4 @@ int Tip(int price, int option)
     }
     return price;
 }
+

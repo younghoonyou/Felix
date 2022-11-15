@@ -6,7 +6,7 @@ const ConfirmButton = (props) => {
   const { title, onClick } = props;
   return (
     <>
-      <button type='submit' className='ConfirmButton' onClick={onClick}>
+      <button type='submit' className='confirm-button' onClick={onClick}>
         {title}
       </button>
     </>

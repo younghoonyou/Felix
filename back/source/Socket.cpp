@@ -1,5 +1,5 @@
-#include "Socket.h"
-#include "Response.h"
+#include "../lib/Socket.h"
+#include "../lib/Response.h"
 #include <iostream>
 #include <vector>
 void IP_Parsing(__uint32_t addr_){
@@ -21,7 +21,6 @@ void PostTransaction(char *buffer){
     while(buffer[i] != '{'){
         i++;
     }
-    // *(buffer + i);
     printf("request: %s\n", buffer+i);
 }
 void GetShowBalance(char *buffer){
@@ -40,9 +39,7 @@ void SendMsg(std::vector<std::pair<std::string,std::string>> &msg_,std::string &
         payload += tmp.first;
         payload += '"';
         payload += ':';
-        // payload += '\'';
         payload += tmp.second;
-        // payload += '\'';
         payload += ", ";
     }
     payload.pop_back();

@@ -2,8 +2,8 @@ const InputName = (props) => {
   const { title, type, name, value, onChange, pre } = props;
 
   return (
-    <>
-      <label className='Input-name' htmlFor={title}>
+    <div className='input-container'>
+      <label className='input-name' htmlFor={title}>
         {title.toUpperCase()}
       </label>
       <input
@@ -12,9 +12,9 @@ const InputName = (props) => {
         value={value}
         onChange={onChange}
         placeholder={pre}
-        className='Input-Inputs'
+        className='input-inputs'
       />
-    </>
+    </div>
   );
 };
 

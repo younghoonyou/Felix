@@ -5,12 +5,14 @@
 class Restaurant{
 private:
     static Restaurant *Instance;
-    Restaurant(std::string acc_) : acc(acc_),balance(0){};
+    Restaurant(std::string acc_) : balance(0) ,acc(acc_){};
+    Restaurant(std::string RestId_, std::string acc_, float balance_) : balance(balance_), acc(acc_), RestId(RestId_){};
     float balance;
+
 public:
     std::string acc;
     std::string RestId;
-    static Restaurant *GetInstance(std::string acc_);
+    static Restaurant *GetInstance(std::string RestId_, std::string acc_, float balance_);
     std::string GetRestaurantAccount();
     float GetRestaurantBalance();
 };

@@ -1,19 +1,23 @@
-import React from "react";
+import React from 'react';
 
 const Amount = (props) => {
-    const { amount, onChange } = props;
-    console.log(amount);
-    return (
-        <>
-            <div className="Amount-Box">
-                <text className="Amount-sale">
-                    Sale amount
-                </text>
-                <text className="Amount-text" onChange={onChange}>
-                    ${amount}
-                </text>
-            </div>
-        </>
-    )
-}
+  const { amount, onChange, onClick } = props;
+  return (
+    <>
+      <div className='amount-box'>
+        <span className='amount-sale'>Sale amount</span>
+        <div className='amount-text-container'>
+          <span className='amount-text' onChange={onChange}>
+            ${amount}
+          </span>
+          {amount && (
+            <button className='amount-delete-btn' onClick={onClick}>
+              <i className='fa-solid fa-circle-xmark amount-delete-icon'></i>
+            </button>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
 export default Amount;

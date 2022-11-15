@@ -1,4 +1,4 @@
-#include "Customer.h"
+#include "../lib/Customer.h"
 
 Customer::Customer(std::string userId_, std::string acc_, float balance_){
     this->acc = acc_;

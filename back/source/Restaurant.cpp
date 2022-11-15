@@ -1,8 +1,9 @@
-#include "Restaurant.h"
+#include "../lib/Restaurant.h"
 Restaurant *Restaurant::Instance = NULL;
-Restaurant *Restaurant::GetInstance(std::string acc_){
+Restaurant *Restaurant::GetInstance(std::string RestId_, std::string acc_, float balance_)
+{
     if(!Instance){
-        Instance = new Restaurant(acc_);
+        Instance = new Restaurant(RestId_,acc_,balance_);
     }
     return Instance;
 }
