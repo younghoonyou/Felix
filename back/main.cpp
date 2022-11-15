@@ -3,14 +3,13 @@
 #include "./lib/Customer.h"
 #include "./lib/Transaction.h"
 #include "./lib/Socket.h"
-#include "./lib/param.h"
 #include <mysql/mysql.h>
-Socket::Server sock_server(8888);
+Socket::Server sock_server(8000);
 void Network(MYSQL **conn)
 {
     MYSQL *con = (*conn);
     sock_server.Bind();
-    sock_server.Listen(5);
+    sock_server.Listen(10);
     sock_server.Accept(&con);
     sock_server.Close();
 }

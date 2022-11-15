@@ -9,7 +9,7 @@
 #include <cctype>
 #include <json/json.h>
 #include <mysql/mysql.h>
-void IP_Parsing(__uint32_t addr_){
+void IP_Parsing(__uint32_t addr_){ 
     std::cout << "IP is ";
     __uint32_t bit = addr_; // IP is 32bits
     int sum = 0;
@@ -23,29 +23,7 @@ void IP_Parsing(__uint32_t addr_){
             std::cout << sum << ".", sum = 0;
     }
 }
-void String_Parsing(char *buffer, std::map<std::string, std::string> &m)
-{
-    std::istringstream stream(buffer);
-    std::string buff;
-    std::string sendmsg;
-    int cnt = 0;
-    while (getline(stream, buff, ','))
-    {
-        // if(isalnum(buff[0])){
-        //     cnt++;
-        //     if(cnt&1){
 
-        //     }
-            // std::cout << buff << '\n';
-            std::istringstream buffstream(buff);
-            std::string buffs;
-            while(getline(buffstream,buffs,'"')){
-                if(buffs[0] == ' ' || buffs[0] == '{' || buffs[0] == '}' || buffs[0] == ':') continue;
-                std::cout << buffs;
-            }
-            // }
-    }
-}
 void SendMsg(std::map<std::string, std::string> &hash, std::string &sendmsg)
 {
     sendmsg += HTTP200;
@@ -71,26 +49,37 @@ void SendMsg(std::map<std::string, std::string> &hash, std::string &sendmsg)
     sendmsg += "Connection: close\r\n\r\n";
     sendmsg += payload;
 }
-void PostTransaction(char *buffer){
+void PostTransaction(char *buffer, std::map<std::string, std::string> &m)
+{
     int i = 0;
-    while(buffer[i] != '{'){
+    while (buffer[i]!='{')
+    {
         i++;
     }
-    std::cout << buffer + i << '\n';
-    // std::map<std::string, std::string> m;
-    //     // m["user"] = "Handsome";
-    // // String_Parsing(buffer + i,m);
-    // if (m["user"] == "" || m["restaurant"] == "" || m["amount"] == ""){
-    //     // send(target, HTTP403,sizeof(HTTP403),0);
-    // }
-    // // else if(){
 
-    // // }
-    // else{
-    //     std::string sendmsg = "";
-    //     SendMsg(m, sendmsg);
-    //     // Send(target, sendmsg);
-    // }
+    std::string str(buffer + i);
+    str.erase(str.begin());
+    str.pop_back();
+    std::istringstream stream(str);
+    std::string buff;
+    std::cout << str<<'\n';
+    while (std::getline(stream, buff, ','))
+    {
+        //ex buff -> "name":"Hoon"
+        std::string key = "", val = "";
+        int i = 1;
+        while(buff[i]!='\"'){
+            key += buff[i];
+            i++;
+        }
+        i += 3;
+        while (buff[i] != '\"')
+        {
+            val += buff[i];
+            i++;
+        }
+        m[key] = val;
+    }
 }
 void Socket::Server::Write(std::string msg_)
 {
@@ -143,36 +132,65 @@ void Socket::Server::Accept(MYSQL **conn)
         const uint BUFFER = 100000000;
         char *buffer = new char[BUFFER + 1];
         std::map<std::string, std::string> m;
-        // m["name"] = "Hoon";
-        // m["age"] = "25";
 
         std::string sendmsg = "";
-        // SendMsg(m,sendmsg);
 
         auto bytesRead = recv(Accept_ret, buffer, BUFFER, 0);
-        std::cout << buffer << '\n';
         buffer[bytesRead] = 0;
 
         MYSQL_RES *res = nullptr; // Result
-        MYSQL_ROW row;
-        std::cout << buffer;
+        MYSQL_ROW row = nullptr;
+        // std::cout << buffer<<'\n';
         if (buffer[0] == 'G') // Get Method
         {
             mysql_query(con, "SELECT balance FROM user WHERE name = 'Hoon';");
             res = mysql_store_result(con);
             row = mysql_fetch_row(res);
-            std::cout << row[0];
             m["balance"] = row[0];
             SendMsg(m, sendmsg);
             Send(Accept_ret, sendmsg);
         }
-        else if (buffer[0] == 'P') // Post Method
+        else if(buffer[0] =='P')// Post Method
         {
-            PostTransaction(buffer);
-            Send(Accept_ret, sendmsg);
+            PostTransaction(buffer,m);
+            std::string query = "select balance from user where name=";
+            query += '\'';
+            query += m["user"];
+            query += '\'';
+            query += ';';
+            mysql_query(con, query.c_str());
+            res = mysql_store_result(con);
+            row = mysql_fetch_row(res);
+            if(!row){
+                sendmsg += HTTP403;
+                Send(Accept_ret, sendmsg);
+            }
+            else{
+                std::cout << row[0] << '\n';
+                if (m["user"] == "" || m["restaurant"] == "" || m["amount"] == "" || atoi(row[0]) < stoi(m["amount"]))
+                {
+                    sendmsg += HTTP403;
+                }
+                else
+                {
+                    std::string sendQuery = "update restaurant set balance=balance+";
+                    sendQuery += m["amount"];
+                    sendQuery += " where name='";
+                    sendQuery += m["restaurant"];
+                    sendQuery += "';";
+                    mysql_query(con, sendQuery.c_str());
+                    std::string sendMoney = "update user set balance=balance-";
+                    sendMoney += m["amount"];
+                    sendMoney += " where name='";
+                    sendMoney += m["user"];
+                    sendMoney += "';";
+                    mysql_query(con, sendMoney.c_str());
+                    sendmsg += HTTP202;
+                }
+                Send(Accept_ret, sendmsg);
+            }
         }
         close(Accept_ret);
-        // delete res;
         delete[] buffer;
     }
 }

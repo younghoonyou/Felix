@@ -11,23 +11,21 @@ const LandingPage = () => {
   const [user, setUser] = useState('');
   const [restaurant, setRestaurant] = useState('');
   const [amount, setAmount] = useState('');
-  const balanceFromBackend = '0';
   const config = {
     headers: {
       'Content-Type': 'application/json',
     },
   };
-  const Fetch = async (user, restaurant, amount) => {
-    const ret = await axios.post(
-      'http://127.0.0.1:8888',
+  const handlePost = async () => {
+    await axios.post(
+      'http://127.0.0.1:8000',
       { user, restaurant, amount },
       config
     );
-    console.log(ret.data);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    Fetch(user, restaurant, amount);
+    handlePost();
   };
 
   const changeAmount = (e) => {
@@ -61,7 +59,7 @@ const LandingPage = () => {
         <NumberBox amount={setAmount} total={amount} />
         <ConfirmButton title='Confirm amount' />
       </form>
-      <Balance balanceFromBackend={balanceFromBackend} />
+      <Balance />
     </div>
   );
 };
