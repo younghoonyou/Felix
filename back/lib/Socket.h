@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <mysql/mysql.h>
 namespace Socket{
 class Socket{
 protected:
@@ -46,7 +47,7 @@ public:
             }
             void Read();
             void Write(std::string msg_);
-            void Accept();
+            void Accept(MYSQL **conn);
             void Bind();
             void Listen(int size);
             void Close();

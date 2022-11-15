@@ -3,14 +3,15 @@
 #include "./lib/Customer.h"
 #include "./lib/Transaction.h"
 #include "./lib/Socket.h"
+#include "./lib/param.h"
 #include <mysql/mysql.h>
-
 Socket::Server sock_server(8888);
-
-void Network(){
+void Network(MYSQL **conn)
+{
+    MYSQL *con = (*conn);
     sock_server.Bind();
     sock_server.Listen(5);
-    sock_server.Accept();
+    sock_server.Accept(&con);
     sock_server.Close();
 }
 void Restaurant_queryInit(Restaurant **res,std::string &restaurnt_query){
@@ -48,10 +49,11 @@ void DB_Connect(MYSQL *conn){
 }
 int main(){
 
-    Restaurant *JanMoJib = Restaurant::GetInstance("JanMoJib","11111",0); // Restaurant Info
-    Customer *Hoon = new Customer("Hoon", "12345", 1000);                 // User Info
-
     MYSQL *conn;
+
+    Restaurant *JanMoJib = Restaurant::GetInstance("JanMoJib", "11111", 0); // Restaurant Info
+    Customer *Hoon = new Customer("Hoon", "12345", 1000);                   // User Info
+
     conn = mysql_init(NULL);
 
     std::string user_query = "insert into user values ";            // User initial
@@ -63,11 +65,13 @@ int main(){
     DB_Connect(conn); // MYSQL DB connection
 
     mysql_query(conn, user_query.c_str());      // User query string
-    mysql_query(conn, restaurnt_query.c_str()); // Restaurant query string
+    // mysql_query(conn, restaurnt_query.c_str()); // Restaurant query string
 
-    Network(); // Socket HTTP TCP/IPv4 
+    Network(&conn); // Socket HTTP TCP/IPv4
+    mysql_close(conn); // Disconnect connection
+    conn = nullptr;
 
-    conn = NULL;
+    delete conn;
     delete JanMoJib;
     delete Hoon;
     return 0;

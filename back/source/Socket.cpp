@@ -1,7 +1,14 @@
 #include "../lib/Socket.h"
 #include "../lib/Response.h"
+#include "../lib/HttpResponse.h"
+#include "../lib/Transaction.h"
 #include <iostream>
 #include <vector>
+#include <map>
+#include <sstream>
+#include <cctype>
+#include <json/json.h>
+#include <mysql/mysql.h>
 void IP_Parsing(__uint32_t addr_){
     std::cout << "IP is ";
     __uint32_t bit = addr_; // IP is 32bits
@@ -16,30 +23,42 @@ void IP_Parsing(__uint32_t addr_){
             std::cout << sum << ".", sum = 0;
     }
 }
-void PostTransaction(char *buffer){
-    int i = 0;
-    while(buffer[i] != '{'){
-        i++;
+void String_Parsing(char *buffer, std::map<std::string, std::string> &m)
+{
+    std::istringstream stream(buffer);
+    std::string buff;
+    std::string sendmsg;
+    int cnt = 0;
+    while (getline(stream, buff, ','))
+    {
+        // if(isalnum(buff[0])){
+        //     cnt++;
+        //     if(cnt&1){
+
+        //     }
+            // std::cout << buff << '\n';
+            std::istringstream buffstream(buff);
+            std::string buffs;
+            while(getline(buffstream,buffs,'"')){
+                if(buffs[0] == ' ' || buffs[0] == '{' || buffs[0] == '}' || buffs[0] == ':') continue;
+                std::cout << buffs;
+            }
+            // }
     }
-    printf("request: %s\n", buffer+i);
 }
-void GetShowBalance(char *buffer){
-    printf("request: %s\n", buffer);
-}
-void SendMsg(std::vector<std::pair<std::string,std::string>> &msg_,std::string &sendmsg){
-    sendmsg += "HTTP/1.1 200 OK\r\n";
-    sendmsg += "X-Powered-By: Express\r\n";
-    sendmsg += "Access-Control-Allow-Origin: *\n";
-    sendmsg += "Access-Control-Allow-Headers: origin, x-requested-with, content-type\r\n";
-    sendmsg += "Content-Type: application/json; charset=utf-8\r\n";
+void SendMsg(std::map<std::string, std::string> &hash, std::string &sendmsg)
+{
+    sendmsg += HTTP200;
     std::string payload = "{";
-    for (auto &tmp : msg_)
+    for (auto &tmp : hash)
     {
         payload += '"';
         payload += tmp.first;
         payload += '"';
-        payload += ':';
+        payload += " : ";
+        payload += '"';
         payload += tmp.second;
+        payload += '"';
         payload += ", ";
     }
     payload.pop_back();
@@ -51,6 +70,27 @@ void SendMsg(std::vector<std::pair<std::string,std::string>> &msg_,std::string &
     sendmsg += "Date: Sun, 13 Nov 2022 19 : 08 : 57 GMT\r\n";
     sendmsg += "Connection: close\r\n\r\n";
     sendmsg += payload;
+}
+void PostTransaction(char *buffer){
+    int i = 0;
+    while(buffer[i] != '{'){
+        i++;
+    }
+    std::cout << buffer + i << '\n';
+    // std::map<std::string, std::string> m;
+    //     // m["user"] = "Handsome";
+    // // String_Parsing(buffer + i,m);
+    // if (m["user"] == "" || m["restaurant"] == "" || m["amount"] == ""){
+    //     // send(target, HTTP403,sizeof(HTTP403),0);
+    // }
+    // // else if(){
+
+    // // }
+    // else{
+    //     std::string sendmsg = "";
+    //     SendMsg(m, sendmsg);
+    //     // Send(target, sendmsg);
+    // }
 }
 void Socket::Server::Write(std::string msg_)
 {
@@ -85,10 +125,11 @@ void Socket::Server::Listen(int size)
         Correct_Print(Listen_Res);
 }
 
-void Socket::Server::Accept()
+void Socket::Server::Accept(MYSQL **conn)
 {
     while (1)
     {
+        MYSQL *con = (*conn);
         unsigned int Clt_size = sizeof(clt_sock);
         int Accept_ret = accept(socket_, (sockaddr *)&clt_sock, &Clt_size);
         if (Accept_ret == -1){
@@ -99,31 +140,55 @@ void Socket::Server::Accept()
             Correct_Print(Accept_Res);
             IP_Parsing(clt_sock.sin_addr.s_addr);
         }
-
         const uint BUFFER = 100000000;
         char *buffer = new char[BUFFER + 1];
-        std::vector<std::pair<std::string, std::string>> vec;
-        vec.push_back({"name","Hoons"});
-        vec.push_back({"age", "25"});
+        std::map<std::string, std::string> m;
+        // m["name"] = "Hoon";
+        // m["age"] = "25";
 
         std::string sendmsg = "";
-        SendMsg(vec,sendmsg);
+        // SendMsg(m,sendmsg);
 
         auto bytesRead = recv(Accept_ret, buffer, BUFFER, 0);
+        std::cout << buffer << '\n';
         buffer[bytesRead] = 0;
-        if (buffer[0] == 'G')
+
+        MYSQL_RES *res = nullptr; // Result
+        MYSQL_ROW row;
+        std::cout << buffer;
+        if (buffer[0] == 'G') // Get Method
         {
-            GetShowBalance(buffer);
+            mysql_query(con, "SELECT balance FROM user WHERE name = 'Hoon';");
+            res = mysql_store_result(con);
+            row = mysql_fetch_row(res);
+            std::cout << row[0];
+            m["balance"] = row[0];
+            SendMsg(m, sendmsg);
+            Send(Accept_ret, sendmsg);
         }
-        else if (buffer[0] == 'P')
+        else if (buffer[0] == 'P') // Post Method
         {
             PostTransaction(buffer);
+            Send(Accept_ret, sendmsg);
         }
-        Send(Accept_ret, sendmsg);
         close(Accept_ret);
+        // delete res;
         delete[] buffer;
     }
 }
+
+
+
+
+
+
+
+
+/*--------------------SERVER-------------------------*/
+
+
+
+
 
 void Socket::Server::Close()
 {
