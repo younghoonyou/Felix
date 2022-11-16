@@ -137,10 +137,9 @@ void Socket::Server::Accept(MYSQL **conn)
 
         auto bytesRead = recv(Accept_ret, buffer, BUFFER, 0);
         buffer[bytesRead] = 0;
-
+        std::cout<<buffer<<'\n';
         MYSQL_RES *res = nullptr; // Result
         MYSQL_ROW row = nullptr;
-        // std::cout << buffer<<'\n';
         if (buffer[0] == 'G') // Get Method
         {
             mysql_query(con, "SELECT balance FROM user WHERE name = 'Hoon';");

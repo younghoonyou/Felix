@@ -13,19 +13,16 @@ const LandingPage = () => {
   const [amount, setAmount] = useState('');
   const config = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'text/plain',
     },
-  };
-  const handlePost = async () => {
-    await axios.post(
-      'http://127.0.0.1:8000',
-      { user, restaurant, amount },
-      config
-    );
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    handlePost();
+    await axios.post(
+      'http://127.0.0.1:8000',
+      JSON.stringify({ user, restaurant, amount }),
+      config
+    );
   };
 
   const changeAmount = (e) => {
