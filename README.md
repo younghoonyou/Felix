@@ -1,8 +1,11 @@
 # Felix
 felix project
 
+<div align="center">
+  
 # Tech Stack
-![C](https://img.shields.io/badge/C-A8B9CC?style=round-square&logo=C&logoColor=white) ![Node.js](https://img.shields.io/badge/Node.js-black?&style=round-square&logo=Node.js&logoColor=339933) ![arduino](https://img.shields.io/badge/Arduino-00979D?style=round-square&logo=arduino&logoColor=white) ![stm32](https://img.shields.io/badge/STM32-03234B?style=round-square&logo=stmicroelectronics&logoColor=white) ![char.js](https://img.shields.io/badge/Chart.js-FF6384?style=round-square&logo=chart.js&logoColor=white) ![mysql](https://img.shields.io/badge/Mysql-4479A1?style=round-square&logo=mysql&logoColor=white) ![aws](https://img.shields.io/badge/AWS-232F3E?style=round-square&logo=amazonaws&logoColor=yellow) ![nginx](https://img.shields.io/badge/Nginx-009639?style=round-square&logo=nginx&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=round-square&logo=C%2B%2B&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=round-square&logo=REACT&logoColor=white) ![mysql](https://img.shields.io/badge/Mysql-4479A1?style=round-square&logo=mysql&logoColor=white)</div>
+
 
 > # <div align="center">Flow Chart</div>
 
